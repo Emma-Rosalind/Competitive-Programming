@@ -1,0 +1,85 @@
+//Correct, could redo with Union find
+import java.util.ArrayList;
+import java.util.Scanner;
+public class work {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n;
+        int large = 0;
+        int num;
+
+        while(sc.hasNext()){
+            n = sc.nextInt();
+            if(n == -1){System.exit(0);}
+            sc.nextLine();
+
+            ArrayList<Ring> rings = new ArrayList<>();
+            ArrayList<Ring> traversed = new ArrayList<>();
+            for(int i = 0; i < n; i++){
+                rings.add(new Ring(sc.nextDouble(),sc.nextDouble(),sc.nextDouble()));
+                sc.nextLine();
+            }
+
+        //find connections
+            for(Ring ring: rings){
+                if(!traversed.contains(ring)){
+                    //System.out.println("not traversed: " + rings.indexOf(ring) );
+                    num = 1 + explore(ring, rings, traversed);
+                    large = Math.max(large, num);
+                }
+            }
+
+            if(large == 1){
+                System.out.println("The largest component contains 1 ring.");
+            }else{
+                System.out.println("The largest component contains "+large+" rings.");
+            }
+            large = 0;
+        }
+    }//main
+
+    public static int explore(Ring cur, ArrayList<Ring> rings, ArrayList<Ring> traversed){
+        int num = 0;
+        //System.out.println("exploring ring " + rings.indexOf(cur));
+        traversed.add(cur);
+        for(Ring ring: rings){
+            if(!traversed.contains(ring)){
+                if(Ring.connected(cur, ring)){
+                    //System.out.println(rings.indexOf(cur)  + "connected to " + rings.indexOf(ring) );
+                    num +=1;
+                    num += explore(ring, rings, traversed);
+                }
+            }
+        }
+        return num;
+    }
+
+    public static class Ring{
+        public double x, y, r;
+        Ring(double x, double y, double r){
+            this.x = x;
+            this.y = y;
+            this.r = r;
+            //System.out.println( x + " " + y + "" + r);
+        }
+
+        public static boolean connected(Ring a, Ring b){
+            double len = a.r + b.r;
+            double dist = (a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y);
+            dist = Math.sqrt(dist);
+
+            if(len > dist){
+                double big = Math.max(b.r, a.r);
+                double small = Math.min(b.r, a.r);
+
+                if(dist + small <= big ){
+                    return false;
+                }
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
+}
