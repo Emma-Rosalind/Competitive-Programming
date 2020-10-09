@@ -1,0 +1,65 @@
+//logicaly correct, but issues with std.in
+import java.util.Scanner;
+public class work {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in).useDelimiter("\n");
+        String [][] matrix;
+        String [][] matrix2;
+        String c;
+        String[] all;
+        int temp = -1;
+
+        while(sc.hasNext()){
+            if(temp != -1) System.out.println();
+            int lines = Integer.parseInt(sc.next().replaceAll("\\s+",""));
+            if(lines == 0) break;
+            int max = 0;
+            all = new String[lines];
+
+            // find longest array
+            for(int i= 0; i < lines; i++){
+                all[i] =  sc.next();
+                temp = all[i].length();
+                max = Math.max(temp, max);
+            }
+
+            matrix = new String [lines][max];
+            matrix2 = new String [max][lines];
+
+            //read in reverse and flip chars
+            for(int i = 0; i < lines; i++){
+                for(int k =0; k < all[i].length(); k++) {
+
+                    c = String.valueOf(all[i].charAt(k));
+                    if (c.equals("-")) {
+                        c = "|";
+                    } else if (c.equals("|")) {
+                        c = "-";
+                    }
+                    matrix[lines - 1 - i][k] = c;
+                }
+            }
+
+            //transpose and print
+            for(int i= 0; i < lines; i++){
+                for(int k= 0; k < max; k++){
+                    matrix2 [k][i] = matrix [i][k];
+                }
+            }
+            for(int i= 0; i < max; i++) {
+                for (int k = 0; k < lines; k++) {
+                    if(matrix2 [i][k] != null){
+                        System.out.print( matrix2 [i][k]);
+                    } else{
+                        System.out.print(" ");
+                    }
+                }
+                System.out.println();
+            }
+        }//case
+    }
+}
+
+
+
